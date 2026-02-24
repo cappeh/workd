@@ -1,14 +1,15 @@
-use std::{fs, io};
-use std::process::Command;
 use serde::Deserialize;
-use toml::de;
 use std::error::Error;
+use std::process::Command;
+use std::{fs, io};
+use toml::de;
 
 #[derive(Debug, Deserialize)]
 pub struct App {
     pub prog: String,
     pub cmd: String,
     pub args: String,
+    pub workspace: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -21,17 +22,28 @@ pub fn load_config_toml_file() -> Result<String, io::Error> {
 }
 
 pub fn read_toml_to_config(file: String) -> Result<Config, de::Error> {
-   let config = toml::from_str(&file)?;
-   Ok(config)
+    let config = toml::from_str(&file)?;
+    Ok(config)
 }
 
-pub fn spawn_apps() -> Result<(), Box<dyn Error>>{
+pub fn spawn_apps() -> Result<(), Box<dyn Error>> {
     let config_file = load_config_toml_file()?;
     let config = read_toml_to_config(config_file)?;
 
     for app in config.app {
-        Command::new(app.cmd).args([app.args, app.prog]).spawn()?;
+        move_to_workspace(&app)?;
+        Command::new(&app.cmd)
+            .args([&app.args, &app.prog])
+            .spawn()?;
     }
 
+    Ok(())
+}
+
+pub fn move_to_workspace(app: &App) -> Result<(), Box<dyn Error>> {
+    // move to workspace
+    Command::new("aerospace")
+        .args(["workspace", &app.workspace])
+        .spawn()?;
     Ok(())
 }
