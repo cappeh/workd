@@ -2,3 +2,18 @@
 prog = "Wezterm"
 cmd = "open"
 args = "-a"
+
+[[app]]
+prog = "Google Chrome"
+cmd = "open"
+args = "-a"
+
+[[app]]
+prog = "Microsoft Outlook"
+cmd = "open"
+args = "-a"
+
+[[app]]
+prog = "rustrover"
+cmd = "open"
+args = "-a"
