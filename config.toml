@@ -1,0 +1,4 @@
+[[app]]
+prog = "Wezterm"
+cmd = "open"
+args = "-a"
