@@ -2,12 +2,13 @@ use serde::Deserialize;
 use std::error::Error;
 use std::process::Command;
 use std::{fs, io};
+use std::path::PathBuf;
 use toml::de;
 
 #[derive(Debug, Deserialize)]
 pub struct App {
-    pub prog: String,
-    pub cmd: String,
+    pub prog: PathBuf,
+    pub cmd: PathBuf,
     pub args: String,
     pub workspace: String,
 }
@@ -33,7 +34,8 @@ pub fn spawn_apps() -> Result<(), Box<dyn Error>> {
     for app in config.app {
         move_to_workspace(&app)?;
         Command::new(&app.cmd)
-            .args([&app.args, &app.prog])
+            .arg(&app.args)
+            .arg(&app.prog)
             .spawn()?;
     }
 
